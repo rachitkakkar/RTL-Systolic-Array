@@ -1,72 +1,102 @@
-module UART_Rx #(
-    parameter BAUD_RATE = 115200, 
-    parameter CLK_SPEED = 100000000, // 100 MHz
-    parameter DATA_WIDTH = 16
-) (
+module UART_RX #(parameter DATA_WIDTH = 8) (
     input logic clk,
     input logic rst,
-    input logic rx,
-    output logic signed [DATA_WIDTH-1] output,
-    output logic valid
+    input logic rx_line,
+    output logic valid,
+    output logic signed [DATA_WIDTH-1] data_out
 );
 
-    localparam int clocks_per_bit = CLK_SPEED / BAUD_RATE;
-    logic [2:0] bit_idx = 'b0;
-    logic [$clog2(clocks_per_bit)-1:0] clk_counter = 'b0;
+    parameter int BAUD_RATE = 115200;
+    parameter int CLOCK_RATE = 100 000 000;
+    parameter int SAMPLES = 16;
 
-    typedef enum {  
+    localparam CLOCKS_PER_SAMPLE = CLOCK_RATE / (BAUD_RATE * SAMPLES);
+    localparam MIDDLE_SAMPLE_POINT = SAMPLES / 2;
+    localparam SAMPLING_WINDOW = CLOCKS_PER_SAMPLE * SAMPLES;
+
+    typedef enum {
         IDLE,
         START,
         DATA,
         STOP
     } state_t;
-    state_t current = IDLE;
 
-    logic [7:0] frame_shift_reg; 
+    state_t current;
+    logic [$clog(CLOCKS_PER_SAMPLE)-1:0] clk_counter;
+    logic [$clog(SAMPLES)-1:0] sample_cnt;
+    logic [DATA_WIDTH-1:0] frame_shift_reg;
+    logic [$clog(DATA_WIDTH)-1:0] bit_cnt;
 
+    // Sequential output/behavior
     always_ff @(posedge clk) begin
-        if (rst) begin
-            clk_counter <= 'b0;
-            bit_idx <= 'b0;
-            valid <= 0;
-        end
-        else if (current == IDLE) begin
-            if (clk_counter == (clocks_per_bit / 2) - 1) begin
-                if (rx == 'b0) begin
-                    current <= START;
-                end
+      if (rst) begin // Synchronous reset
+        clk_counter <= 0;
+        sample_cnt <= 0;
+        bit_cnt <= 0;
+        current <= IDLE;
+        valid <= 0;
+      end
+      else begin
+        case (current)
+          IDLE: begin
+            if (!rx_line) begin // Detect first falling edge
+              current <= START;
+              clk_counter <= 'b0;
+              sample_cnt <= 'b0;
+              valid <= 'b0;
             end
-            
-            if (clk_counter == clocks_per_bit - 1) begin
-                clk_counter <= 'b0;
+          end
+          START: begin
+            if (clk_counter >= CLOCKS_PER_SAMPLE-1) begin
+              clk_counter <= 'b0;
+              sample_cnt <= sample_cnt + 1;
             end
-            else
-                clk_counter <= clk_counter + 1;
-        end
-        else if (current == START) begin
-            if (clk_counter == clocks_per_bit - 1) begin // Sample each bit at center
-                current <= DATA;
-                clk_counter <= 'b0;
-                bit_idx <= 'b0;
-            end
-            else
-                clk_counter <= clk_counter + 1;
-        end
-        else if (current == DATA) begin
-            if (clk_counter == (clocks_per_bit / 2) - 1) begin
-                frame_shift_reg <= {rx, frame_shift_reg[7:1]};                
-                if (bit_idx == 3'b111) begin
-                    bit_idx <= 'b0;
-                    current <= STOP;
-                end 
-                else
-                    bit_idx <= bit_idx + 1;
-            end
-            else if (clk_counter == clocks_per_bit - 1) begin
-                clk_counter <= 'b0;
+            if (sample_cnt == MIDDLE_SAMPLE_POINT) begin // Check low in the middle
+              if (rx_line) // If high, not full start bit -- rather noise to be rejected
+                current <= IDLE;
             end
             else
-                clk_counter <= clk_counter + 1;
-        end
+              clk_counter <= clk_counter + 1;
+            if (sample_cnt >= SAMPLING_WINDOW) begin // Wait one bit time before moving onto data state
+              current <= DATA;
+              sample_cnt <= 'b0;
+              bit_cnt <= 'b0;
+            end
+          end
+          DATA: begin
+            if (clk_counter >= CLOCKS_PER_SAMPLE-1) begin
+              clk_counter <= 'b0;
+              sample_cnt <= sample_cnt + 1;
+            end
+            else
+              clk_counter <= clk_counter + 1;
+            if (sample_cnt == MIDDLE_SAMPLE_POINT) begin // Sample in the middle
+              frame_shift_reg <= {frame_shift_reg[DATA_WIDTH-1:1], rx_line};
+              bit_cnt <= bit_cnt + 1;
+            end
+            if (sample_cnt >= SAMPLING_WINDOW) begin
+              if (bit_cnt == DATA_WIDTH) begin
+                current <= STOP;
+              end
+              sample_cnt <= 'b0;
+            end
+          end
+          STOP: begin
+            if (clk_counter >= CLOCKS_PER_SAMPLE-1) begin
+              clk_counter <= 'b0;
+              sample_cnt <= sample_cnt + 1;
+            end
+            else
+              clk_counter <= clk_counter + 1;
+            if (sample_cnt == MIDDLE_SAMPLE_POINT) begin // Check high in the middle
+              if (rx_line)
+                valid <= 1'b1;
+            end
+            if (sample_cnt >= SAMPLING_WINDOW) begin // Wait one bit time before moving onto IDLE state
+              current <= IDLE;
+            end
+          end
+        endcase
+      end
     end
 endmodule

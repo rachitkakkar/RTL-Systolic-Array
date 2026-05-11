@@ -1,6 +1,6 @@
 module Systolic_Array #(
   parameter N = 8,
-  parameter DATA_WIDTH = 16
+  parameter DATA_WIDTH = 8
 ) (
   input logic clk, rst, valid_in,
   input logic signed [DATA_WIDTH-1:0] row_in [0:N-1], 

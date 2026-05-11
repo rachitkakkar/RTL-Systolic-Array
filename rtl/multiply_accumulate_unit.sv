@@ -1,4 +1,4 @@
-module Multiply_Accumulate_Unit #(parameter DATA_WIDTH = 16) (
+module Multiply_Accumulate_Unit #(parameter DATA_WIDTH = 8) (
   input logic clk, rst, valid_in,
   input logic signed [DATA_WIDTH-1:0] in_top, in_side,
   input logic signed [DATA_WIDTH*2-1:0] acc_in,
