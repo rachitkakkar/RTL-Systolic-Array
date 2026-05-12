@@ -66,7 +66,7 @@ module Systolic_Array #(
     else begin
       if (valid_in) begin
         for (int i = 0; i < N; i = i + 1) begin
-          int data_idx = clk_counter - i;
+          automatic int data_idx = clk_counter - i;
 
           // Matrix A (rows skewed by 'i' cycles) and Matrix B (columns skewed by 'i' cycles)
           if (data_idx >= 0 && data_idx < N) begin

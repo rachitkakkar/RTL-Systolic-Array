@@ -1,13 +1,15 @@
-module UART_RX #(parameter DATA_WIDTH = 8) (
+`timescale 1ns/10ps
+
+module uart_rx #(parameter DATA_WIDTH = 8) (
   input logic clk,
   input logic rst,
   input logic rx_line,
   output logic valid,
-  output logic signed [DATA_WIDTH-1] data_out
+  output logic signed [DATA_WIDTH-1:0] data_out
 );
 
   parameter int BAUD_RATE = 115200;
-  parameter int CLOCK_RATE = 100 000 000;
+  parameter int CLOCK_RATE = 100000000;
   parameter int SAMPLES = 16;
 
   localparam CLOCKS_PER_SAMPLE = CLOCK_RATE / (BAUD_RATE * SAMPLES);
@@ -22,10 +24,10 @@ module UART_RX #(parameter DATA_WIDTH = 8) (
   } state_t;
 
   state_t current;
-  logic [$clog(CLOCKS_PER_SAMPLE)-1:0] clk_counter;
-  logic [$clog(SAMPLES)-1:0] sample_cnt;
+  logic [$clog2(CLOCKS_PER_SAMPLE)-1:0] clk_counter;
+  logic [$clog2(SAMPLES)-1:0] sample_cnt;
   logic [DATA_WIDTH-1:0] frame_shift_reg;
-  logic [$clog(DATA_WIDTH)-1:0] bit_cnt;
+  logic [$clog2(DATA_WIDTH)-1:0] bit_cnt;
 
   // Sequential output/behavior
   always_ff @(posedge clk) begin
@@ -61,6 +63,8 @@ module UART_RX #(parameter DATA_WIDTH = 8) (
             current <= DATA;
             sample_cnt <= 'b0;
             bit_cnt <= 'b0;
+
+            $display("DATA");
           end
         end
         DATA: begin
