@@ -80,18 +80,15 @@ class monitor;
     int bytes_recived = 0;
 
     while (bytes_recived < 12) begin
-      #86810;
-      bytes_recived++;
-      $display("LOOP %h", bytes_recived);
-      // @(posedge uart_rx.clk);
+      @(posedge uart_rx.clk);
 
-      // if (uart_rx.valid) begin
-      //   logic [7:0] rx_data;
-      //   rx_data = uart_rx.data_out;
-      //   $display("[MONITOR] Recieved Character: %s (%0h)", rx_data, rx_data);
-      //   recieved.put(rx_data);
-      //   bytes_recived++;
-      // end
+      if (uart_rx.valid) begin
+        logic [7:0] rx_data;
+        rx_data = uart_rx.data_out;
+        $display("[MONITOR] Recieved Character: %s (%0h)", rx_data, rx_data);
+        recieved.put(rx_data);
+        bytes_recived++;
+      end
     end
   endtask
 endclass
@@ -140,7 +137,7 @@ class environment;
       g.run();   // Produce transactions
       d.run();   // Drive DUT
       m.run();   // Monitor RX output
-      // s.run();   // Check results
+      s.run();   // Check results
     join
   endtask
 endclass
@@ -157,7 +154,7 @@ module tb_uart_rx;
 
   // Clock Generation (100 MHz)
   initial uart_rx.clk = 0;
-  always #5 uart_rx.clk <= ~uart_rx.clk;
+  always #5 uart_rx.clk = ~uart_rx.clk;
 
   environment env;
 
