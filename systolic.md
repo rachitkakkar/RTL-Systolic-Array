@@ -1,5 +1,5 @@
 Guide I found online:
-* Upon closer inspection, it appears it could be written by AI, but it was still helpful
+* Upon closer inspection, it appears it could be written by AI (very GPT like), but it was still helpful
 
 Here’s a practical, Verilog-first guide to building a systolic architecture on [FPGA](https://www.ampheo.com/c/fpgas-field-programmable-gate-array). We’ll do a matrix-multiply (C = A×B) because it’s the canonical example, but the pattern applies to FIR, conv, etc.
 ![sm1-2](https://hackmd.io/_uploads/ryU1t-MyWx.png)

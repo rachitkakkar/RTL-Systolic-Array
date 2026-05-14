@@ -12,7 +12,7 @@ A systolic array computes matrix multiplication ($C = A \times B$) by pipelining
 
 - **`systolic_array.sv`**: The top-level array module. It handles data buffering and the necessary time-skewing logic so that matrix elements arrive at the correct Processing Element at the right clock cycle. Features parameterized array dimension (`N`) and precision (`DATA_WIDTH`).
 - **`multiply_accumulate_unit.sv`**: The core Processing Element (PE). It performs a synchronous multiply-accumulate operation (`acc_out <= acc_in + in_top * in_side`) and pass-through forwarding of the `top` and `side` data to adjacent PEs.
-- **`uart_rx.sv`**: A 16x oversampled UART receiver state machine. This module is intended to serve as the communication bridge, allowing a host PC to stream matrices to the FPGA/accelerator.
+- **`uart_rx.sv`**: A 16x oversampled UART receiver state machine with a default BAUD rate of 115.2 kps. This module is intended to serve as the communication bridge, allowing a host PC to stream matrices to the FPGA/accelerator.
 
 ## Verification & Simulation
 
@@ -23,7 +23,13 @@ Testbenches are located in the `tb/` directory:
 
 Other testbenches are expected to be added in the future.
 
-The Verilator build configuration is specified in `verilator.f`, which outputs waveforms to the `waveforms/` directory for debugging.
+The Verilator build configuration is specified in `verilator.f`, and past runs are avaliable in the `waveforms/` directory for debugging.
+
+To run the UART testbench:
+```
+verilator -f verilator.f
+./obj_dir/Vtb_uart_rx
+```
 
 ## Parameterization
 
