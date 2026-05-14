@@ -82,6 +82,7 @@ module uart_rx #(parameter DATA_WIDTH = 8) (
             clk_counter <= clk_counter + 1;
           if (sample_cnt == MIDDLE_SAMPLE_POINT && clk_counter == 'b0) begin // Sample in the middle
             frame_shift_reg[bit_cnt] <= rx_line;
+            // frame_shift_reg <= {rx_line, frame_shift_reg[DATA_WIDTH-1:1]}; // Alternative way to shift
             bit_cnt <= bit_cnt + 1;
           end
         end
