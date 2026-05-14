@@ -6,7 +6,7 @@ This project is currently a **work in progress**.
 
 ## Overview
 
-A systolic array computes matrix multiplication ($C = A \times B$) by pipelining the data flow through a mesh of identically structured Processing Elements (PEs). In this design, matrix $A$ rows stream horizontally, matrix $B$ columns stream vertically, and partial sums accumulate within each PE or are passed along.
+A systolic array computes matrix multiplication ($C = A \times B$) by pipelining the data flow through a mesh of identically structured Processing Elements (PEs). Essentially, this turns matrix multiplication from $O(n^3)$ to $O(n)$ by rolling-out two dimensions into hardware. In this particulary design, matrix $A$ rows stream horizontally, matrix $B$ columns stream vertically, and partial sums accumulate within each PE or are passed along. This is known as output stationary, whereas most TPUs are weight stationary if I recall correctly.
 
 ### Key Components
 
@@ -30,6 +30,8 @@ To run the UART testbench:
 verilator -f verilator.f
 ./obj_dir/Vtb_uart_rx
 ```
+
+Everything has been tested on MacOS, but it should be cross-platform.
 
 ## Parameterization
 
