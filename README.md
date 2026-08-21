@@ -41,15 +41,15 @@ Other testbenches are expected to be added in the future.
 
 The Verilator build configuration is specified in `verilator.f`, and past runs are avaliable in the `waveforms/` directory for debugging.
 
-**Note: The first two testbenches were developed with the help of AI assistance**
-
 To run the instrumentation testbench:
 ```bash
 verilator -f verilator.f
 ./obj_dir/Vtb_instrumentation
 ```
 
-Everything has been tested on MacOS, but it should be cross-platform.
+To generate random matricies and golden model result using Python, install `numpy` and run the `golden-model.py` script.
+
+Everything has been tested on MacOS, but it should be cross-platform as it relies soley on Python, numpy, and Verilator.
 
 ### Waveforms
 
@@ -63,6 +63,82 @@ Everything has been tested on MacOS, but it should be cross-platform.
 ### Scoreboard Console Result
 
 **tb_instrumentation.sv**
+
+```
+[SCOREBOARD] Loaded gold_result.hex
+[GEN] Loaded matrix_a.hex and matrix_b.hex
+[DRIVER] All data sent.
+[SCOREBOARD][PASS] C[0][0] = -10794
+[SCOREBOARD][PASS] C[0][1] = -3796
+[SCOREBOARD][PASS] C[0][2] = 8814
+[SCOREBOARD][PASS] C[0][3] = 1490
+[SCOREBOARD][PASS] C[0][4] = -15529
+[SCOREBOARD][PASS] C[0][5] = -5646
+[SCOREBOARD][PASS] C[0][6] = 25923
+[SCOREBOARD][PASS] C[0][7] = -4795
+[SCOREBOARD][PASS] C[1][0] = -2849
+[SCOREBOARD][PASS] C[1][1] = 11308
+[SCOREBOARD][PASS] C[1][2] = 21987
+[SCOREBOARD][PASS] C[1][3] = 6527
+[SCOREBOARD][PASS] C[1][4] = -15419
+[SCOREBOARD][PASS] C[1][5] = -6390
+[SCOREBOARD][PASS] C[1][6] = -5042
+[SCOREBOARD][PASS] C[1][7] = -7088
+[SCOREBOARD][PASS] C[2][0] = -24263
+[SCOREBOARD][PASS] C[2][1] = -32053
+[SCOREBOARD][PASS] C[2][2] = -15802
+[SCOREBOARD][PASS] C[2][3] = -750
+[SCOREBOARD][PASS] C[2][4] = 17608
+[SCOREBOARD][PASS] C[2][5] = 8288
+[SCOREBOARD][PASS] C[2][6] = 4003
+[SCOREBOARD][PASS] C[2][7] = -8981
+[SCOREBOARD][PASS] C[3][0] = 17359
+[SCOREBOARD][PASS] C[3][1] = 4059
+[SCOREBOARD][PASS] C[3][2] = 11228
+[SCOREBOARD][PASS] C[3][3] = -723
+[SCOREBOARD][PASS] C[3][4] = 1070
+[SCOREBOARD][PASS] C[3][5] = -2088
+[SCOREBOARD][PASS] C[3][6] = -18498
+[SCOREBOARD][PASS] C[3][7] = -11820
+[SCOREBOARD][PASS] C[4][0] = -13697
+[SCOREBOARD][PASS] C[4][1] = 16772
+[SCOREBOARD][PASS] C[4][2] = 1985
+[SCOREBOARD][PASS] C[4][3] = 13964
+[SCOREBOARD][PASS] C[4][4] = -4136
+[SCOREBOARD][PASS] C[4][5] = -10673
+[SCOREBOARD][PASS] C[4][6] = 23884
+[SCOREBOARD][PASS] C[4][7] = -19050
+[SCOREBOARD][PASS] C[5][0] = 29617
+[SCOREBOARD][PASS] C[5][1] = -12118
+[SCOREBOARD][PASS] C[5][2] = -24467
+[SCOREBOARD][PASS] C[5][3] = 3425
+[SCOREBOARD][PASS] C[5][4] = -10787
+[SCOREBOARD][PASS] C[5][5] = -7755
+[SCOREBOARD][PASS] C[5][6] = 8766
+[SCOREBOARD][PASS] C[5][7] = -10323
+[SCOREBOARD][PASS] C[6][0] = -477
+[SCOREBOARD][PASS] C[6][1] = -18579
+[SCOREBOARD][PASS] C[6][2] = 23596
+[SCOREBOARD][PASS] C[6][3] = -12950
+[SCOREBOARD][PASS] C[6][4] = 17288
+[SCOREBOARD][PASS] C[6][5] = 2303
+[SCOREBOARD][PASS] C[6][6] = -21722
+[SCOREBOARD][PASS] C[6][7] = -8264
+[SCOREBOARD][PASS] C[7][0] = 2464
+[SCOREBOARD][PASS] C[7][1] = -3802
+[SCOREBOARD][PASS] C[7][2] = -6408
+[SCOREBOARD][PASS] C[7][3] = -1962
+[SCOREBOARD][PASS] C[7][4] = -11290
+[SCOREBOARD][PASS] C[7][5] = 1714
+[SCOREBOARD][PASS] C[7][6] = -8163
+[SCOREBOARD][PASS] C[7][7] = 7693
+[SCOREBOARD] --- Summary: 64 PASS, 0 FAIL ---
+[TB] Simulation completed.
+- tb/tb_instrumentation.sv:267: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.044 2026-01-01
+- Verilator: $finish at 50us; walltime 0.002 s; speed 40.371 ms/s
+- Verilator: cpu 0.001 s on 1 threads; alloced 2 MB
+```
 
 **tb_systolic_array.sv**
 
