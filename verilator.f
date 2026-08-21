@@ -1,7 +1,10 @@
--binary 
-rtl/uart_rx.sv 
-tb/tb_uart_rx.sv 
---top tb_uart_rx 
---Wno-WIDTH 
---timing 
+-binary
+rtl/systolic_array.sv
+rtl/multiply_accumulate_unit.sv
+rtl/instrumentation.sv
+tb/tb_instrumentation.sv
+--top tb_instrumentation
+--Wno-WIDTH
+--Wno-TIMESCALEMOD
+--timing
 --trace

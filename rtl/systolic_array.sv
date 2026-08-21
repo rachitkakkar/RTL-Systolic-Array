@@ -1,4 +1,4 @@
-module Systolic_Array #(
+module systolic_array #(
   parameter N = 8,
   parameter DATA_WIDTH = 8
 ) (
@@ -18,7 +18,7 @@ module Systolic_Array #(
       valid_out <= 'b0;
     end
     else begin
-      if (clk_counter == 2*N-1) // Assert valid out when computation is done
+      if (clk_counter == 3*N-1) // Assert valid out when computation is done
         valid_out <= 'b1;
       else begin
         if (valid_in)
@@ -70,8 +70,8 @@ module Systolic_Array #(
 
           // Matrix A (rows skewed by 'i' cycles) and Matrix B (columns skewed by 'i' cycles)
           if (data_idx >= 0 && data_idx < N) begin
-            top_matrix_in[i] <= B_matrix[data_idx][i];
-            side_matrix_in[i] <= A_matrix[i][data_idx];
+            top_matrix_in[i] <= (clk_counter == data_idx) ? column_in[i] : B_matrix[data_idx][i];
+            side_matrix_in[i] <= (clk_counter == i) ? row_in[data_idx] : A_matrix[i][data_idx];
           end else begin
             // Don't send data yet, buffer with zeroes
             top_matrix_in[i] <= 'b0;
@@ -97,7 +97,7 @@ module Systolic_Array #(
     for (i = 0; i < N; i++) begin : row_gen
       for (j = 0; j < N; j++) begin : col_gen
         
-        Multiply_Accumulate_Unit PE (
+        multiply_accumulate_unit PE (
           .clk      (clk),
           .rst      (rst),
           .valid_in       (valid_in),
