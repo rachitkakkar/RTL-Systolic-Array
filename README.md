@@ -1,8 +1,8 @@
 # RTL-Systolic-Array
 
-A parameterizable hardware implementation of a 2D Systolic Array in SystemVerilog, designed primarily for matrix multiplication acceleration.
+A parameterizable hardware implementation of a 2D Systolic Array in SystemVerilog, designed primarily for accelerating multiplication of N x N matrices of signed integers. This project features a high-performance `AXI4-Stream` instrumentation bridge to stream input matrices and extract the computed results efficiently. This specific protocol was chosen because it is non-memory-mapped, which forgoes the complexity needed for an AXI4 or AXI4-Lite bus implementation while allowing matrix data to be continuously transmitted (or "streamed") while the instrumentation FSM is in the `RECV_A` and `RECV_B` states.
 
-This project features a high-performance **AXI4-Stream** instrumentation bridge to stream input matrices and extract the computed results efficiently. This specific protocol was chosen because it is non-memory mapped, which is ideal for this application (where matrix data is transmitted in bursts).
+This project is still very much a work in progress, and I currently want to add improvements like double/ping-pong buffering (so we can load new matricies while streaming output matricies).
 
 ## Overview
 
@@ -32,9 +32,11 @@ To come
 ### File Structure and Build Instructions
 
 The project uses **Verilator** for simulation and linting.
+
 Testbenches are located in the `tb/` directory:
-- `tb_systolic_array.sv`: Defines a SystemVerilog `interface` (`sys_if`) and a basic object-oriented testbench scaffold (e.g., generator, mailbox) to drive the matrix inputs.
-- `tb_instrumentation.sv`: The generator produces test matrices, the driver controls the AXI handshakes, and the scoreboard verifies the output against mathematical expectations.
+- `tb_systolic_array.sv`: Defines a SystemVerilog `interface` (`sys_if`) and a basic object-oriented testbench scaffold (e.g., generator, mailbox) to drive the matrix inputs. The generator produces basic test matrices consisting of a simple pattern and a identity matrix, the driver feeds these matrices into the systolic array interface, and the scoreboard verifies that multiplying by the identity leaves the pattern matrix unchanged.
+- `golden-model.py`: Not a testbench, but rather a script to generate random input matrices and compute the "golden model" expected output via `numpy`. The script is seeded so the random matrix generation remains deterministic, and the three matrices are serialized into hex files in row-major order.
+- `tb_instrumentation.sv`: The generator loads the random matrices from the python script with `$readmemh`, the driver controls the AXI handshakes, and the scoreboard verifies the output against the golden model expected output (also loaded with `readmemh`).
 - `tb_uart_rx.sv`: Testbench for validating the UART receiver logic.
 
 Other testbenches are expected to be added in the future.
