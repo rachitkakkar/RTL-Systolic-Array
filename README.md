@@ -2,6 +2,8 @@
 
 A parameterizable hardware implementation of a 2D Systolic Array in SystemVerilog, designed primarily for accelerating multiplication of N x N matrices of signed integers. This project features a high-performance `AXI4-Stream` instrumentation bridge to stream input matrices and extract the computed results efficiently. This specific protocol was chosen because it is non-memory-mapped, which forgoes the complexity needed for an AXI4 or AXI4-Lite bus implementation while allowing matrix data to be continuously transmitted (or "streamed") while the instrumentation FSM is in the `RECV_A` and `RECV_B` states.
 
+![Systolic Array Diagram](Systolic-Array-Diagram.png)
+
 This project is still very much a work in progress, and I currently want to add improvements like double/ping-pong buffering (so we can load new matricies while streaming output matricies).
 
 ## Overview

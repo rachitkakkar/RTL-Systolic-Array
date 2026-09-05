@@ -34,8 +34,8 @@ class generator;
 
   task run();
     // Load hex files produced by golden-model.py
-    $readmemh("matrix_a.hex", A_flat);
-    $readmemh("matrix_b.hex", B_flat);
+    $readmemh("tb/matrix_a.hex", A_flat);
+    $readmemh("tb/matrix_b.hex", B_flat);
     $display("[GEN] Loaded matrix_a.hex and matrix_b.hex");
 
     // Pack each row into a single 64-bit AXI word
@@ -148,7 +148,7 @@ class scoreboard;
   task run();
     logic [127:0] act_row;
 
-    $readmemh("gold_result.hex", gold_flat);
+    $readmemh("tb/gold_result.hex", gold_flat);
     $display("[SCOREBOARD] Loaded gold_result.hex");
     
     for (int row = 0; row < N; row++) begin
