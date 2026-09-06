@@ -63,7 +63,6 @@ class driver;
       end
       @(posedge vif.clk);
     end
-    vif.valid_in <= 0;
   endtask
 endclass
 
@@ -80,6 +79,7 @@ class monitor;
 
   task run();
     @(posedge vif.valid_out);
+    vif.valid_in <= 0;
     for (int i = 0; i < N; i++) begin
       for (int j = 0; j < N; j++) begin
         m_C.put(vif.acc_output[i][j]);

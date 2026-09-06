@@ -26,6 +26,12 @@ module instrumentation #(
   logic signed [(2*DATA_WIDTH)-1:0] acc_output [0:N-1][0:N-1];
   logic valid_out;
 
+  logic ping_pong_sel;
+  logic send_C_start;
+  logic send_C_end;
+  // Sending C ends at the same time m_axis_tlast is asserted, so I'll just set it as an alias
+  assign send_C_end = m_axis_tlast;
+
   systolic_array #(
     .N(N),
     .DATA_WIDTH(DATA_WIDTH)
@@ -71,6 +77,7 @@ module instrumentation #(
       recv_cnt <= '0;
       send_cnt <= '0;
       feed_cnt <= '0;
+      ping_pong_sel <= '0;
     end else begin
       case (state)
         IDLE: begin
@@ -120,6 +127,20 @@ module instrumentation #(
 
         SEND_C: begin
           if (m_axis_tready && m_axis_tvalid) begin
+            // Swap accumulation registers (ping-pong buffering)
+            ping_pong_sel <= ~ping_pong_sel;
+            
+            // ============================================================
+            // Once the consumer of the output matrix is ready, automatically 
+            // transition to the start to load the next matricies. Because of
+            // the ping-pong buffer, we can load the next A and B while we are
+            // transmitting C. As a result, C is controlled by a seperate control
+            // signal that handles transmitting C over AXI4-Stream simultaneously
+            // with this state machine. SEND_C only exits to assert this control
+            // signal.
+            // ============================================================
+            // state <= IDLE;
+
             if (send_cnt == N - 1) begin
               state <= IDLE;
             end else begin
@@ -133,10 +154,17 @@ module instrumentation #(
     end
   end
 
+  // always_ff @(posedge clk) begin
+  //   if (send_C_start && m_axis_tready && m_axis_tvalid) begin
+      
+  //   end
+  // end
+
   // Combinational Outputs
   always_comb begin
     s_axis_tready = 1'b0;
     m_axis_tvalid = 1'b0;
+    send_C_start = 1'b0;
     m_axis_tlast = 1'b0;
     valid_in = 1'b0;
     m_axis_tdata = '0;
@@ -156,12 +184,13 @@ module instrumentation #(
       end
       SEND_C: begin
         m_axis_tvalid = 1'b1;
+        send_C_start = 1'b1;
         if (send_cnt == N - 1) m_axis_tlast = 1'b1;
         for (int i = 0; i < N; i++) begin
           m_axis_tdata[i * (2*DATA_WIDTH) +: (2*DATA_WIDTH)] = acc_output[send_cnt][i];
         end
       end
-      default: ; // Just it avoid Warning-CASEINCOMPLETE in Verilator
+      default: ; // Just to avoid Warning-CASEINCOMPLETE in Verilator
     endcase
   end
 
