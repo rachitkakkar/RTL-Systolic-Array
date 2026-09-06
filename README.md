@@ -59,6 +59,8 @@ Everything has been tested on MacOS, but it should be cross-platform as it relie
 
 **tb_instrumentation.sv**
 
+**tb_systolic_array.sv**
+![Systolic Array Testbench Waveform](waveforms/Systolic_Array_2.png)
 
 **tb_uart_rx.sv (unused)**
 
