@@ -148,6 +148,79 @@ Everything has been tested on MacOS, but it should be cross-platform as it relie
 
 **tb_systolic_array.sv**
 
+```
+[SCOREBOARD][PASS] C[0][0] = 1
+[SCOREBOARD][PASS] C[0][1] = 2
+[SCOREBOARD][PASS] C[0][2] = 3
+[SCOREBOARD][PASS] C[0][3] = 4
+[SCOREBOARD][PASS] C[0][4] = 5
+[SCOREBOARD][PASS] C[0][5] = 6
+[SCOREBOARD][PASS] C[0][6] = 7
+[SCOREBOARD][PASS] C[0][7] = 8
+[SCOREBOARD][PASS] C[1][0] = 2
+[SCOREBOARD][PASS] C[1][1] = 3
+[SCOREBOARD][PASS] C[1][2] = 4
+[SCOREBOARD][PASS] C[1][3] = 5
+[SCOREBOARD][PASS] C[1][4] = 6
+[SCOREBOARD][PASS] C[1][5] = 7
+[SCOREBOARD][PASS] C[1][6] = 8
+[SCOREBOARD][PASS] C[1][7] = 9
+[SCOREBOARD][PASS] C[2][0] = 3
+[SCOREBOARD][PASS] C[2][1] = 4
+[SCOREBOARD][PASS] C[2][2] = 5
+[SCOREBOARD][PASS] C[2][3] = 6
+[SCOREBOARD][PASS] C[2][4] = 7
+[SCOREBOARD][PASS] C[2][5] = 8
+[SCOREBOARD][PASS] C[2][6] = 9
+[SCOREBOARD][PASS] C[2][7] = 10
+[SCOREBOARD][PASS] C[3][0] = 4
+[SCOREBOARD][PASS] C[3][1] = 5
+[SCOREBOARD][PASS] C[3][2] = 6
+[SCOREBOARD][PASS] C[3][3] = 7
+[SCOREBOARD][PASS] C[3][4] = 8
+[SCOREBOARD][PASS] C[3][5] = 9
+[SCOREBOARD][PASS] C[3][6] = 10
+[SCOREBOARD][PASS] C[3][7] = 11
+[SCOREBOARD][PASS] C[4][0] = 5
+[SCOREBOARD][PASS] C[4][1] = 6
+[SCOREBOARD][PASS] C[4][2] = 7
+[SCOREBOARD][PASS] C[4][3] = 8
+[SCOREBOARD][PASS] C[4][4] = 9
+[SCOREBOARD][PASS] C[4][5] = 10
+[SCOREBOARD][PASS] C[4][6] = 11
+[SCOREBOARD][PASS] C[4][7] = 12
+[SCOREBOARD][PASS] C[5][0] = 6
+[SCOREBOARD][PASS] C[5][1] = 7
+[SCOREBOARD][PASS] C[5][2] = 8
+[SCOREBOARD][PASS] C[5][3] = 9
+[SCOREBOARD][PASS] C[5][4] = 10
+[SCOREBOARD][PASS] C[5][5] = 11
+[SCOREBOARD][PASS] C[5][6] = 12
+[SCOREBOARD][PASS] C[5][7] = 13
+[SCOREBOARD][PASS] C[6][0] = 7
+[SCOREBOARD][PASS] C[6][1] = 8
+[SCOREBOARD][PASS] C[6][2] = 9
+[SCOREBOARD][PASS] C[6][3] = 10
+[SCOREBOARD][PASS] C[6][4] = 11
+[SCOREBOARD][PASS] C[6][5] = 12
+[SCOREBOARD][PASS] C[6][6] = 13
+[SCOREBOARD][PASS] C[6][7] = 14
+[SCOREBOARD][PASS] C[7][0] = 8
+[SCOREBOARD][PASS] C[7][1] = 9
+[SCOREBOARD][PASS] C[7][2] = 10
+[SCOREBOARD][PASS] C[7][3] = 11
+[SCOREBOARD][PASS] C[7][4] = 12
+[SCOREBOARD][PASS] C[7][5] = 13
+[SCOREBOARD][PASS] C[7][6] = 14
+[SCOREBOARD][PASS] C[7][7] = 15
+[TB] Scoreboard finished!
+[TB] Simulation completed.
+- tb/tb_systolic_array.sv:210: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.044 2026-01-01
+- Verilator: $finish at 10us; walltime 0.002 s; speed 7.132 ms/s
+- Verilator: cpu 0.001 s on 1 threads; alloced 2 MB
+```
+
 **tb_uart_rx.sv (unused)**
 
 ## Parameterization
