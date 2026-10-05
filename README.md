@@ -19,6 +19,14 @@ A systolic array computes matrix multiplication ($C = A \times B$) by pipelining
 
 These components can be found in the `rtl` directory.
 
+### To-do
+- Add start/busy/done control and per-job clearing [DONE]
+- Forward PE parameters and widen accumulators and results [DONE]
+- Update `tb_systolic_array` to new architecture
+- Add ping-pong registers to each PE; toggle select each time done is asserted
+- Add start/busy/done signals for each buffer upon sending output
+  - Array should stall when both buffers are busy
+
 ### Architecture
 
 **Top-Level Block Diagram**
@@ -56,8 +64,6 @@ To generate random matricies and golden model result using Python, install `nump
 Everything has been tested on MacOS, but it should be cross-platform as it relies soley on Python, numpy, and Verilator.
 
 ### Waveforms
-
-**tb_instrumentation.sv**
 
 **tb_systolic_array.sv**
 ![Systolic Array Testbench Waveform](waveforms/Systolic_Array_2.png)
@@ -220,8 +226,6 @@ Everything has been tested on MacOS, but it should be cross-platform as it relie
 - Verilator: $finish at 10us; walltime 0.002 s; speed 7.132 ms/s
 - Verilator: cpu 0.001 s on 1 threads; alloced 2 MB
 ```
-
-**tb_uart_rx.sv (unused)**
 
 ## Parameterization
 

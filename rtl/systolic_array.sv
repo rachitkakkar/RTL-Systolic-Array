@@ -1,28 +1,43 @@
 module systolic_array #(
   parameter N = 8,
-  parameter DATA_WIDTH = 8
+  parameter DATA_WIDTH = 8,
+  parameter ACC_WIDTH = 2 * DATA_WIDTH + $clog2(N)
 ) (
-  input logic clk, rst, valid_in,
+  input logic clk, rst, start, valid_in,
   input logic signed [DATA_WIDTH-1:0] row_in [0:N-1], 
   input logic signed [DATA_WIDTH-1:0] column_in [0:N-1],
-  output logic signed [(2*DATA_WIDTH)-1:0] acc_output [0:N-1][0:N-1],
-  output logic valid_out
+  output logic signed [ACC_WIDTH-1:0] acc_output [0:N-1][0:N-1],
+  output logic busy, done
 );
-  
-  logic [$clog2(2*N):0] clk_counter;
+
+  localparam COUNTER_WIDTH = $clog2(3*N + 1);
+  logic [COUNTER_WIDTH-1:0] clk_counter;
+  logic job_clear, advance;
+
+  // start is accepted only while idle, on a separate cycle from the first row.
+  // valid_in enables every pipeline step, including zero-padding/drain cycles.
+  assign job_clear = start && !busy;
+  assign advance = busy && valid_in;
 
   // Clock counter
   always_ff @(posedge clk) begin
     if (rst) begin
       clk_counter <= 'b0;
-      valid_out <= 'b0;
+      busy <= 1'b0;
+      done <= 1'b0;
     end
     else begin
-      if (clk_counter == 3*N-1) // Assert valid out when computation is done
-        valid_out <= 'b1;
-      else begin
-        if (valid_in)
-          clk_counter <= clk_counter + 1;
+      done <= 1'b0;
+      if (job_clear) begin
+        clk_counter <= '0;
+        busy <= 1'b1;
+      end else if (advance) begin
+        if (clk_counter == COUNTER_WIDTH'(3*N-1)) begin
+          busy <= 1'b0;
+          done <= 1'b1;
+        end else begin
+          clk_counter <= clk_counter + 1'b1;
+        end
       end
     end
   end
