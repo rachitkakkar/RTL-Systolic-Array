@@ -7,7 +7,7 @@ interface sys_if #(parameter N = 8, parameter DATA_WIDTH = 8) (input logic clk);
   logic signed [DATA_WIDTH-1:0] row_in [0:N-1];
   logic signed [DATA_WIDTH-1:0] column_in [0:N-1];
   logic signed [(2*DATA_WIDTH)-1:0] acc_output [0:N-1][0:N-1];
-  logic valid_out;
+  logic valid_out, start, busy;
 endinterface
 
 class generator;
@@ -50,7 +50,10 @@ class driver;
   task run();
     vif.valid_in <= 0;
     wait(vif.rst == 1'b0);
-    @(posedge vif.clk);
+    @(negedge vif.clk);
+    vif.start = 1;
+    @(negedge vif.clk);
+    vif.start = 0;
 
     for (int cycle = 0; cycle < N; cycle++) begin
       vif.valid_in <= 1;
@@ -178,7 +181,8 @@ module tb_systolic_array;
 
   systolic_array #(
     .N(N),
-    .DATA_WIDTH(DATA_WIDTH)
+    .DATA_WIDTH(DATA_WIDTH),
+    .ACC_WIDTH(2*DATA_WIDTH)
   ) dut (
     .clk(clk),
     .rst(vif.rst),
@@ -186,7 +190,9 @@ module tb_systolic_array;
     .row_in(vif.row_in),
     .column_in(vif.column_in),
     .acc_output(vif.acc_output),
-    .valid_out(vif.valid_out)
+    .start(vif.start),
+    .busy(vif.busy),
+    .done(vif.valid_out)
   );
 
   initial clk = 0;
@@ -200,6 +206,7 @@ module tb_systolic_array;
 
     vif.rst = 1;
     vif.valid_in = 0;
+    vif.start = 0;
     #20 vif.rst = 0;
 
     env = new(vif, N);
