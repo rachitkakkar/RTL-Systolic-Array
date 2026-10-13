@@ -1,4 +1,7 @@
 -binary
+rtl/ram.sv
+rtl/matrix_buffer.sv
+rtl/systolic_array_compute.sv
 rtl/systolic_array.sv
 rtl/multiply_accumulate_unit.sv
 rtl/instrumentation.sv
