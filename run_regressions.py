@@ -74,8 +74,8 @@ def main():
         else:
             print(f"PASS: {top}", flush=True)
 
-    # PROMPT: Write a modification at the end which moves .vcd files into a "build_artificats" directory
-    artifacts = ROOT / "build_artificats"
+    # PROMPT: Write a modification at the end which moves .vcd files into a "build_artifacts" directory
+    artifacts = ROOT / "build_artifacts"
     artifacts.mkdir(exist_ok=True)
     for waveform in ROOT.glob("*.vcd"):
         waveform.replace(artifacts / waveform.name)

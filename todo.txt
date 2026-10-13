@@ -1,0 +1,3 @@
+- [X] Banked RAM
+- [ ] Ping-pong double buffer
+- [ ] Output / weight stationary switch !!!
